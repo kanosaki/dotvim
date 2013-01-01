@@ -6,9 +6,6 @@ filetype on
 filetype indent on
 filetype plugin on
 
-"pathogen
-call pathogen#runtime_append_all_bundles()
-call pathogen#infect()
 
 " 表示 "{{{
 
@@ -67,24 +64,8 @@ set statusline=[%{winnr('$')>1?':'.winnr().'/'.winnr('$'):''}]\ %t\ %y%{'['.(&fe
 " ディレクトリの自動移動
 au   BufEnter *   execute ":lcd " . escape(expand("%:p:h"), " #\\")
 
-"StatusLine Mode Color{{{
-"if has('gui_running')
-"    augroup InsertHook
-"        autocmd!
-"        autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2e4340
-"        autocmd InsertLeave * highlight StatusLine guifg=#f6f3e8 guibg=#444444
-"    augroup END
-"else
-"    augroup InsertHook
-"        autocmd!
-"        autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2e4340
-"        autocmd InsertLeave * highlight StatusLine guifg=#2e4340 guibg=#ccdc90
-"    augroup END
-"endif
-"}}}
 "}}}
 " バッファ関連 "{{{
-
 " 切り替え時のundoの効果持続等
 set hidden           
 
@@ -95,9 +76,6 @@ set splitright
 
 "}}}
 " キーバインド "{{{
-"Fキー
-"nnoremap <F3> :NERDTreeToggle<CR>
-"nnoremap <F4> :BufExplorer<CR>
 
 " Swap + and =
 nnoremap = +
@@ -106,19 +84,12 @@ nnoremap + =
 nnoremap <C-e> $
 nnoremap <C-a> ^
 
-"nnoremap <C-/> g/
-"nnoremap / :g/
-"nnoremap <C-?> g?
-"nnoremap ? :g?
-
 nnoremap <Space> <C-d>
 nnoremap <S-Space> <C-u> 
 
 "実行
 nnoremap <F5> !./%<CR>
 "全文オートインデント
-"nnoremap <F12> <ESC>gg=G
-"nnoremap <C-J> <ESC>
 
 inoremap <C-b> <C-o>b
 inoremap <C-f> <ESC>ea
@@ -178,16 +149,10 @@ cnoremap <C-B> <Left>
 
 
 noremap <silent> ge :NERDTreeToggle<CR>
-"noremap <silent> gb :BufExplorer<CR>
-"nnoremap tl :TlistToggle<CR>
 
 "Move carret visuallity
 nnoremap j gj
 nnoremap k gk
-
-
-"FuzzyFinder
-"nnoremap <silent> <C-f>f :FufFile<CR>
 
 "Unite
 nnoremap <silent> <C-k>f :<C-u>Unite -vertical file file_mru directory_mru<CR>
@@ -199,71 +164,8 @@ nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
 nnoremap <silent> <C-k>o :<C-u>Unite outline<CR>
 nnoremap <silent> <C-k>m :<C-u>Unite mark<CR>
 
-"neco keybindings
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-"inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-" <TAB>: completion.
-"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-"inoremap <expr><C-y>  neocomplcache#close_popup()
-""inoremap <expr><C-e>  neocomplcache#cancel_popup() 
-
-" yankring
-nnoremap <silent> <F11> :YRShow<CR>
-
 "}}}
 " プラグインごとの設定 "{{{
-
-"Ctags
-let g:Tlist_Ctags_Cmd="/usr/bin/ctags"
-
-" Acp
-let g:acp_enableAtStartup=0
-let g:acp_ignorecaseOption=1
-
-" pydiction
-let g:pydiction_location=expand("$HOME/.vim/vimfiles/complete-dict")
-
-"ropevim
-let ropevim_extended_complete=1
-let ropevim_vim_completion=1
-let rope_guess_project=1
-
-" YankRing
-let g:yankring_history_dir = "$HOME/.vim/"
-let g:yankring_clipboard_monitor = 1
-let g:yankring_min_element_length = 3
-
-"netcomplcache
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_auto_select = 0
-let g:neocomplcache_smart_case = 1
-let g:neocomplcache_enable_camel_case_completion = 1
-let g:neocomplcache_enable_underbar_completion = 1
-let g:neocomplcache_min_syntax_length = 3
-
-" Plugin key-mappings.
-"imap <C-k> <Plug>(neocomplcache_snippets_expand)
-"smap <C-k> <Plug>(neocomplcache_snippets_expand)
-
-"snipMate like behavior
-"imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-"imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ?
-" \ "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-"" For snippet_complete marker.
-"if has('conceal')
-"    set conceallevel=2 concealcursor=i
-"endif
-"let g:neocomplcache_snippets_dir = $HOME . '/.vim/snippets'
-
-" Define keyword.
-if !exists('g:neocomplcache_keyword_patterns')
-  let g:neocomplcache_keyword_patterns = {}
-endif
-let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -271,73 +173,13 @@ autocmd FileType eruby,html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplcache_omni_patterns')
-let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-"autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-"Unite
-"let g:unite_enable_start_insert=1
-let g:unite_update_time=50
-let g:unite_split_rule="botright"
-let g:unite_winwidth=70
-let g:unite_source_ack_command="ack"
-com! -nargs=* Ack Unite ack:<args>
-
-"showmarks
-let g:showmarks_enable=0
-let g:showmarks_textlower="\t"
-
-" RSense
-let g:rsenseHome=expand("$HOME/local/lib/rsense")
-let g:rsenseUseOmniFunc=1
-
-" QuickRun
-let g:quickrun_config = {} 
-let g:quickrun_config['markdown'] = {
-    \ 'outputter' : 'browser'
-    \ }
-"}}}
-" Source Explorer
-let g:SrcExpl_pluginList = [
-    \ "__Tag_List__",
-    \ "_NERD_tree_",
-    \ "Source_Explorer"
-    \ ]
-
-" PowerLine
-let g:Powerline_cache_file=expand("$HOME/.vim/cache/powerline")
-let g:Powerline_symbols = 'fancy'
-
+" }}}
 "ファイルタイプごとの設定{{{
 "------ Ruby ----------
 "autocmd BufNewFile *.rb 0r $HOME/.vim/skeleton/skelton.rb
 "----------------------
 
 
-"------ Haskell -------
-au Bufenter *.hs compiler ghc
-let g:hs_highlight_delimiters=1
-let g:hs_highlight_boolean=1
-let g:hs_highlight_types=1
-let g:hs_highlight_more_types=1
-let g:hs_highlight_debug=1
-"configure browser for haskell_doc.vim
-let g:haddock_browser = "open"
-let g:haddock_browser_callformat = "%s %s"
-au BufEnter *.hs compiler ghc
-"-----------------------
-
-"------ LaTeX --------
-" grep will sometimes skip displaying the file name.
-"set grepprg=grep\ -nH\ $*
-"---------------------
-"closetag
 
 
 "}}}
