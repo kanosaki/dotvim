@@ -233,14 +233,10 @@ let g:neocomplcache_ignore_composite_filetype_lists = {
   \ 'php.unit': 'php',
   \}
 
-nnoremap <silent> <C-k>f :<C-u>Unite -vertical file file_mru directory_mru<CR>
-nnoremap <silent> gt :<C-u>Unite buffer file file_mru directory_mru<CR>
-nnoremap <silent> _ :<C-u>Unite buffer file file_mru directory_mru<CR>
-nnoremap <silent> go :<C-u>Unite -vertical outline<CR>
-nnoremap <silent> gb :<C-u>Unite buffer<CR>
-nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
-nnoremap <silent> <C-k>o :<C-u>Unite outline<CR>
-nnoremap <silent> <C-k>m :<C-u>Unite mark<CR>
+let g:untie_split_rule='botright'
+let g:unite_winwidth=70
+let g:unite_source_ack_command="ack"
+com! -nargs=* Ack Unite ack:<args>
 
 
 " }}}
