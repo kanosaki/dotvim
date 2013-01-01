@@ -1,11 +1,47 @@
 
 set nocompatible
+" NeoBundle {{{
+filetype off
+
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+  call neobundle#rc(expand('~/.vim/bundle/'))
+endif
+
+"
+" Basic Bundles
+"
+NeoBundle 'Shougo/neobundle.vim'
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'osyo-manga/unite-quickfix'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 't9md/vim-unite-ack'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-endwise'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'mattn/zencoding-vim'
+NeoBundle 'Lokaltog/vim-powerline'
+NeoBundle 'YankRing.vim'
+"
+" Optional Bundles
+"
+
+NeoBundle 'klen/python-mode'
+NeoBundle 'tpope/vim-rake'
+NeoBundle 'mitechie/pyflakes-pathogen'
+" }}}
+
 syntax on
-""set term=xterm-256color
 filetype on
 filetype indent on
 filetype plugin on
-
 
 " 表示 "{{{
 
@@ -52,6 +88,12 @@ set ruler
 set shortmess=aTI
 
 set matchpairs+=<:>
+
+" Powerline settings
+" This must not be in gvimrc, but vimrc.
+if has('gui_running')
+    let g:Powerline_symbols = 'fancy'
+endif
 
 "タブ関連{{{
 set tabstop=4
@@ -173,6 +215,26 @@ autocmd FileType eruby,html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Yankring
+let g:yankring_history_dir = expand('$HOME/.vim/history')
+let g:yankring_min_element_length=3
+
+"netcomplcache
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_auto_select = 0
+let g:neocomplcache_smart_case = 1
+let g:neocomplcache_enable_camel_case_completion = 1
+let g:neocomplcache_enable_underbar_completion = 1
+let g:neocomplcache_min_syntax_length = 3
+
+let g:neocomplcache_ignore_composite_filetype_lists = {
+  \ 'python.unit': 'python',
+  \ 'php.unit': 'php',
+  \}
+
+
+
 " }}}
 "ファイルタイプごとの設定{{{
 "------ Ruby ----------
