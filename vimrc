@@ -33,9 +33,9 @@ NeoBundle 'YankRing.vim'
 " Optional Bundles
 "
 
-NeoBundle 'klen/python-mode'
+NeoBundleLazy 'klen/python-mode'
+autocmd FileType python NeoBundleSource python-mode
 NeoBundle 'tpope/vim-rake'
-NeoBundle 'mitechie/pyflakes-pathogen'
 " }}}
 
 syntax on
@@ -245,9 +245,6 @@ nnoremap <silent> <C-k>m :<C-u>Unite mark<CR>
 
 " }}}
 "ファイルタイプごとの設定{{{
-"------ Ruby ----------
-"autocmd BufNewFile *.rb 0r $HOME/.vim/skeleton/skelton.rb
-"----------------------
 
 
 
