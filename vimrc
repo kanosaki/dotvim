@@ -104,7 +104,7 @@ set statusline=[%{winnr('$')>1?':'.winnr().'/'.winnr('$'):''}]\ %t\ %y%{'['.(&fe
 "}}}
 
 " ディレクトリの自動移動
-au   BufEnter *   execute ":lcd " . escape(expand("%:p:h"), " #\\")
+"au   BufEnter *   execute ":lcd " . escape(expand("%:p:h"), " #\\")
 
 "}}}
 " バッファ関連 "{{{
@@ -233,6 +233,14 @@ let g:neocomplcache_ignore_composite_filetype_lists = {
   \ 'php.unit': 'php',
   \}
 
+nnoremap <silent> <C-k>f :<C-u>Unite -vertical file file_mru directory_mru<CR>
+nnoremap <silent> gt :<C-u>Unite buffer file file_mru directory_mru<CR>
+nnoremap <silent> _ :<C-u>Unite buffer file file_mru directory_mru<CR>
+nnoremap <silent> go :<C-u>Unite -vertical outline<CR>
+nnoremap <silent> gb :<C-u>Unite buffer<CR>
+nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
+nnoremap <silent> <C-k>o :<C-u>Unite outline<CR>
+nnoremap <silent> <C-k>m :<C-u>Unite mark<CR>
 
 
 " }}}
