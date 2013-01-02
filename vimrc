@@ -206,6 +206,9 @@ nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
 nnoremap <silent> <C-k>o :<C-u>Unite outline<CR>
 nnoremap <silent> <C-k>m :<C-u>Unite mark<CR>
 
+" disable ?(Search backward) and use ? as ack search
+nnoremap ? :<C-u>Unite ack<CR>
+
 "}}}
 " プラグインごとの設定 "{{{
 
