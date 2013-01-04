@@ -27,6 +27,7 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'Lokaltog/vim-powerline'
 NeoBundle 'YankRing.vim'
+NeoBundle 'tacroe/unite-mark'
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
