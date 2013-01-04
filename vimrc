@@ -13,7 +13,6 @@ endif
 "
 NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
-NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
@@ -26,15 +25,29 @@ NeoBundle 'tpope/vim-endwise'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
-NeoBundle 'mattn/zencoding-vim'
 NeoBundle 'Lokaltog/vim-powerline'
 NeoBundle 'YankRing.vim'
+NeoBundleLazy 'Shougo/vimshell', {
+    \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
+    \}
 "
 " Optional Bundles
 "
 
-NeoBundleLazy 'klen/python-mode'
-autocmd FileType python NeoBundleSource python-mode
+" C/C++
+NeoBundleLazy 'c.vim', {
+    \    "autoload" : { "filetypes" : ["c", "cpp" ] }   
+    \}
+
+" Python
+NeoBundleLazy 'klen/python-mode', {
+    \    "autoload" : { "filetypes" : ["python" ] }   
+    \}
+
+" SGMLs
+NeoBundleLazy 'mattn/zencoding-vim', {
+    \    "autoload" : { "filetypes" : ["html", "xml", "xhtml", "eruby", "scala"] }   
+    \}
 NeoBundle 'tpope/vim-rake'
 " }}}
 
