@@ -17,7 +17,6 @@ NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 't9md/vim-unite-ack'
 NeoBundle 'tpope/vim-surround'
@@ -31,6 +30,15 @@ NeoBundle 'tacroe/unite-mark'
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
+
+NeoBundleLazy 'Shougo/vimfiler', {
+            \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ] },
+            \   'depends'   : [ 'Shougo/unite.vim' ],
+            \}
+let s:bundle = neobundle#get('vimfiler')
+function! s:bundle.hooks.on_source(bundle)
+    " Write unite.vim configuration here
+endfunction
 "
 " Optional Bundles
 "
@@ -204,7 +212,7 @@ cnoremap <C-F> <Right>
 cnoremap <C-B> <Left>
 
 
-noremap <silent> ge :NERDTreeToggle<CR>
+noremap <silent> ge :VimFilerExplorer<CR>
 
 "Move carret visuallity
 nnoremap j gj
