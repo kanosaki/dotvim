@@ -14,11 +14,6 @@ endif
 NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 't9md/vim-unite-ack'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-endwise'
 NeoBundle 'tpope/vim-fugitive'
@@ -26,7 +21,13 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'Lokaltog/vim-powerline'
 NeoBundle 'YankRing.vim'
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tacroe/unite-mark'
+NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'osyo-manga/unite-quickfix'
+NeoBundle 't9md/vim-unite-ack'
+
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
@@ -37,7 +38,6 @@ NeoBundleLazy 'Shougo/vimfiler', {
             \}
 let s:bundle = neobundle#get('vimfiler')
 function! s:bundle.hooks.on_source(bundle)
-    " Write unite.vim configuration here
 endfunction
 "
 " Optional Bundles
