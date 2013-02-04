@@ -38,7 +38,9 @@ NeoBundleLazy 'Shougo/vimfiler', {
             \}
 let s:bundle = neobundle#get('vimfiler')
 function! s:bundle.hooks.on_source(bundle)
+    let g:vimfiler_as_default_explorer=1
 endfunction
+nnoremap <silent> ge :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
 "
 " Optional Bundles
 "
@@ -64,7 +66,6 @@ syntax on
 filetype on
 filetype indent on
 filetype plugin on
-
 " 表示 "{{{
 
 "タイトルを表示
@@ -212,8 +213,6 @@ cnoremap <C-F> <Right>
 cnoremap <C-B> <Left>
 
 
-noremap <silent> ge :VimFilerExplorer<CR>
-
 "Move carret visuallity
 nnoremap j gj
 nnoremap k gk
@@ -245,23 +244,100 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 let g:yankring_history_dir = expand('$HOME/.vim/history')
 let g:yankring_min_element_length=3
 
-"netcomplcache
+"neocomplcache {{{
+" neocomplcache
+" http://github.com/Shougo/neocomplcache
+
 let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_auto_select = 0
-let g:neocomplcache_smart_case = 1
-let g:neocomplcache_enable_camel_case_completion = 1
-let g:neocomplcache_enable_underbar_completion = 1
+
+let g:neocomplcache_max_list = 100
+let g:neocomplcache_max_keyword_width = 50
+let g:neocomplcache_max_filename_width = 15
+
+let g:neocomplcache_auto_completion_start_length = 2
+let g:neocomplcache_manual_completion_start_length = 2
+
+let g:neocomplcache_min_keyword_length = 3
 let g:neocomplcache_min_syntax_length = 3
 
-let g:neocomplcache_ignore_composite_filetype_lists = {
-  \ 'python.unit': 'python',
-  \ 'php.unit': 'php',
-  \}
+let g:neocomplcache_enable_ignore_case = 1
+let g:neocomplcache_enable_smart_case = 1
+
+let g:neocomplcache_disable_auto_complete = 0
+
+let g:neocomplcache_enable_wildcard = 1
+let g:neocomplcache_enable_quick_match = 0
+let g:neocomplcache_enable_auto_select = 0
+let g:neocomplcache_enable_auto_delimiter = 0
+
+let g:neocomplcache_enable_camel_case_completion = 1
+let g:neocomplcache_enable_underbar_completion = 1
+
+let g:neocomplcache_enable_caching_message = 1
+
+if !exists('g:neocomplcache_same_filetype_lists')
+  let g:neocomplcache_same_filetype_lists = {}
+endif
+let g:neocomplcache_same_filetype_lists.html  = 'css'
+let g:neocomplcache_same_filetype_lists.xhtml = 'html'
+let g:neocomplcache_same_filetype_lists.zsh   = 'sh'
+
+if !exists('g:neocomplcache_filetype_include_lists')
+  let g:neocomplcache_filetype_include_lists= {}
+endif
+"let g:neocomplcache_filetype_include_lists.perl6 = [{'filetype' : 'pir', 'start' : 'Q:PIR\s*{', 'end' : '}'}]
+"let g:neocomplcache_filetype_include_lists.vim = 
+"     \[{'filetype' : 'python', 'start' : '^\s*python <<\s*\(\h\w*\)', 'end' : '^\1'}]
+let g:neocomplcache_plugin_disable = { 'tags_complete': 1 }
+
+if !exists('g:neocomplcache_plugin_rank')
+  let g:neocomplcache_plugin_rank = {}
+endif
+let g:neocomplcache_plugin_rank.buffer_complete = 10
+
+"---------------------------------------
+" Keymaps
+
+nnoremap <silent> <Space>ne :<C-u>NeoComplCacheCachingBuffer<CR>:echo "Caching done."<CR>
+
+"---------------------------------------
+" Snippets
+
+let g:neocomplcache_snippets_dir = $VIM_DIR.'/snippets'
+let g:neocomplcache_disable_select_mode_mappings = 1
+
+augroup MyNeocomSnips
+  autocmd!
+  autocmd BufEnter * call <SID>neocom_smap_init()
+  autocmd BufWritePre *.snip call <SID>neocom_snip_entab()
+augroup END
+
+function! s:neocom_smap_init()
+  smapclear
+  smapclear <buffer>
+  smap <silent> <C-j> <C-c>aa<BS><Plug>(neocomplcache_snippets_jump)
+  snoremap <Esc> <C-c>
+endfunction
+
+function! s:neocom_snip_entab()
+  setlocal noexpandtab
+  retab!
+  execute 'setlocal sw='.&l:shiftwidth.' ts='.&l:tabstop
+endfunction
+
+"}}}
 
 let g:untie_split_rule='botright'
 let g:unite_winwidth=70
-let g:unite_source_ack_command="ack"
-com! -nargs=* Ack Unite ack:<args>
+if executable('ack')
+    let g:unite_source_ack_command="ack"
+    com! -nargs=* Ack Unite ack:<args>
+elseif executable('ack-grep')
+    let g:unite_source_ack_command="ack-grep"
+    com! -nargs=* Ack Unite ack:<args>
+else
+    echo 'ack command not found'
+endif
 
 
 " }}}
