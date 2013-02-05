@@ -5,6 +5,7 @@ BUNDLEDIR = File.join(VIMDIR, 'bundle')
 OS        = case RUBY_PLATFORM
             when /linux/  then 'linux'
             when /darwin/ then 'mac'
+            end
  
 if OS.nil?
   warn "Unsupported os!\n"
@@ -29,7 +30,7 @@ task :bundle do
   sh 'vim +NeoBundleInstall +qall'
 end
 
-desk 'update'
+desc 'update'
 task :update do
   Dir.chdir VIMDIR do
     sh 'git pull'
