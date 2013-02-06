@@ -340,6 +340,9 @@ else
     echo 'ack command not found'
 endif
 
+" RSense
+let g:rsenseUseOmniFunc=1
+
 
 " }}}
 "ファイルタイプごとの設定{{{
