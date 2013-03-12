@@ -28,6 +28,9 @@ NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 't9md/vim-unite-ack'
 
+NeoBundle 'scrooloose/syntastic'
+NeoBundle 'closetag.vim'
+
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
@@ -48,18 +51,32 @@ nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
 
 " C/C++
 NeoBundleLazy 'c.vim', {
-    \    "autoload" : { "filetypes" : ["c", "cpp" ] }   
+    \    "autoload" : { "filetypes" : ["c", "cpp"] }   
     \}
 
 " Python
 NeoBundleLazy 'klen/python-mode', {
-    \    "autoload" : { "filetypes" : ["python" ] }   
+    \    "autoload" : { "filetypes" : ["python"] }   
     \}
 
 " SGMLs
 NeoBundleLazy 'mattn/zencoding-vim', {
     \    "autoload" : { "filetypes" : ["html", "xml", "xhtml", "eruby", "scala"] }   
     \}
+
+" Haskell
+NeoBundleLazy 'dag/vim2hs', {
+    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \}
+NeoBundleLazy 'eagletmt/ghcmod-vim', {
+    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \}
+let s:bundle = neobundle#get('ghcmod-vim')
+function! s:bundle.hooks.on_source(bundle)
+    augroup ghcmodcheck
+      autocmd! BufWritePost <buffer> GhcModCheckAsync
+    augroup END
+endfunction
 NeoBundle 'tpope/vim-rake'
 " }}}
 
@@ -477,7 +494,9 @@ set updatetime=500
 let g:svbfre = '.\+'
 
 " Use clipboard register.
-set clipboard& clipboard+=unnamed
+if $TMUX == ''
+    set clipboard+=unnamed
+endif
 
 " create directory automatically
 augroup vimrc-auto-mkdir
