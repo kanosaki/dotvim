@@ -77,6 +77,13 @@ function! s:bundle.hooks.on_source(bundle)
       autocmd! BufWritePost <buffer> GhcModCheckAsync
     augroup END
 endfunction
+NeoBundleLazy 'eagletmt/unite-haddock', {
+    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \}
+NeoBundleLazy 'ujihisa/neco-ghc', {
+    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \}
+
 NeoBundle 'tpope/vim-rake'
 " }}}
 
@@ -176,7 +183,8 @@ nnoremap <F5> !./%<CR>
 
 inoremap <C-b> <C-o>b
 inoremap <C-f> <ESC>ea
-inoremap <C-q> <ESC><ESC>
+inoremap <C-q> <ESC>
+silent !stty -ixon > /dev/null 2>/dev/null
 inoremap <C-a> <C-o>:call WSBack()<CR>
 
 "Create and move new line below and upper with modified return key
