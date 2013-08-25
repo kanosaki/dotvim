@@ -12,24 +12,63 @@ endif
 " Basic Bundles
 "
 NeoBundle 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/vimproc'
-NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
+
+NeoBundle 'Shougo/neocomplcache', {
+      \ 'autoload' : {
+      \   'insert' : 1,
+      \ }}
+
+NeoBundleLazy 'Shougo/neosnippet', {
+      \ 'autoload' : {
+      \   'insert' : 1,
+      \ }}
+let s:bundle = neobundle#get('neosnippet')
+function! s:bundle.hooks.on_source(bundle)
+    " SuperTab like snippets behavior.
+    imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+    \ "\<Plug>(neosnippet_expand_or_jump)"
+    \: pumvisible() ? "\<C-n>" : "\<TAB>"
+    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+    \ "\<Plug>(neosnippet_expand_or_jump)"
+    \: "\<TAB>"
+
+    " For snippet_complete marker.
+    if has('conceal')
+      set conceallevel=2 concealcursor=i
+    endif
+endfunction
+
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-endwise'
+NeoBundle 'tpope/vim-endwise', {
+      \ 'autoload' : {
+      \   'insert' : 1,
+      \ } }
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
-NeoBundle 'Lokaltog/vim-powerline'
+NeoBundle 'bling/vim-airline'
+let g:airline_branch_prefix = '⭠ '
+let g:airline_readonly_symbol = '⭤ '
+let g:airline_right_sep = ''
+let g:airline_left_sep = ''
+let g:airline_theme = 'luna'
+let g:airline#extensions#whitespace#enabled = 0
 NeoBundle 'YankRing.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tacroe/unite-mark'
 NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 't9md/vim-unite-ack'
 
 NeoBundle 'scrooloose/syntastic'
-NeoBundle 'closetag.vim'
+"NeoBundle 'closetag.vim'
 
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
@@ -45,6 +84,7 @@ function! s:bundle.hooks.on_source(bundle)
 endfunction
 nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
 nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
+nnoremap <silent> + :<C-u>VimFilerBufferDir -toggle<CR>
 "
 " Optional Bundles
 "
@@ -68,24 +108,50 @@ NeoBundleLazy 'mattn/zencoding-vim', {
 NeoBundleLazy 'dag/vim2hs', {
     \    "autoload" : { "filetypes" : ["haskell"] }   
     \}
+let s:bundle = neobundle#get('vim2hs')
+function! s:bundle.hooks.on_source(bundle)
+    let g:haskell_conceal = 0
+endfunction
 NeoBundleLazy 'eagletmt/ghcmod-vim', {
     \    "autoload" : { "filetypes" : ["haskell"] }   
     \}
 let s:bundle = neobundle#get('ghcmod-vim')
 function! s:bundle.hooks.on_source(bundle)
+    nnoremap <silent> <Leader>i :GhcModInfoPreview<CR>
+    nnoremap <silent> <Leader>t :GhcModTypeInsert<CR>
+    nnoremap <silent> <Leader>l :GhcModCheckAndLintAsync<CR>
     augroup ghcmodcheck
       autocmd! BufWritePost <buffer> GhcModCheckAsync
     augroup END
 endfunction
 NeoBundleLazy 'eagletmt/unite-haddock', {
-    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \   "autoload" : { "filetypes" : ["haskell"] }   
     \}
 NeoBundleLazy 'ujihisa/neco-ghc', {
-    \    "autoload" : { "filetypes" : ["haskell"] }   
+    \   "autoload" : { "filetypes" : ["haskell"] }   
+    \}
+" Ruby and Rake
+"NeoBundle 'tpope/vim-rake'
+NeoBundleLazy 'ujihisa/unite-rake', {
+      \ 'depends' : 'Shougo/unite.vim' }
+
+" Rails
+NeoBundle 'tpope/vim-rails'
+NeoBundleLazy 'basyura/unite-rails', {
+    \   'depends'   : [ 'Shougo/unite.vim' ],
     \}
 
-NeoBundle 'tpope/vim-rake'
+" Coffee script
+NeoBundleLazy 'kchmck/vim-coffee-script', {
+    \    "autoload" : { "filetypes" : ["coffee"] }   
+    \}
 " }}}
+
+" Utils
+NeoBundle 'tyru/restart.vim'
+
+" REGREL
+NeoBundle 'kanosaki/regrel.vim'
 
 syntax on
 filetype on
@@ -139,9 +205,9 @@ set matchpairs+=<:>
 
 " Powerline settings
 " This must not be in gvimrc, but vimrc.
-if has('gui_running')
-    let g:Powerline_symbols = 'fancy'
-endif
+"if has('gui_running')
+"    let g:Powerline_symbols = 'fancy'
+"endif
 
 "タブ関連{{{
 set tabstop=4
@@ -166,10 +232,6 @@ set splitright
 
 "}}}
 " キーバインド "{{{
-
-" Swap + and =
-nnoremap = +
-nnoremap + =
 
 nnoremap <C-e> $
 nnoremap <C-a> ^
@@ -211,6 +273,7 @@ nnoremap <M-l> <C-W>l
 nnoremap <M-n> :bn<CR>
 nnoremap <M-p> :bp<CR>
 nnoremap <M-d> :bd<CR>
+nnoremap <M-q> :q<CR>
 nnoremap <D-D> :bd<CR>
 
 "オムニ補完
@@ -372,6 +435,8 @@ let g:rsenseUseOmniFunc=1
 " }}}
 "ファイルタイプごとの設定{{{
 
+au BufRead,BufNewFile,BufReadPre *.coffee set filetype=coffee
+autocmd FileType coffee setlocal sw=2 sts=2 ts=2
 
 
 
