@@ -55,8 +55,13 @@ NeoBundle 'thinca/vim-ref'
 NeoBundle 'bling/vim-airline'
 let g:airline_branch_prefix = '⭠ '
 let g:airline_readonly_symbol = '⭤ '
-let g:airline_right_sep = ''
-let g:airline_left_sep = ''
+if has('gui_running')
+    let g:airline_right_sep = '⮂'
+    let g:airline_left_sep = '⮀'
+else
+    let g:airline_right_sep = ''
+    let g:airline_left_sep = ''
+endif 
 let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
 NeoBundle 'YankRing.vim'
@@ -136,7 +141,11 @@ NeoBundleLazy 'ujihisa/unite-rake', {
       \ 'depends' : 'Shougo/unite.vim' }
 
 " Rails
-NeoBundle 'tpope/vim-rails'
+NeoBundleLazy 'tpope/vim-rails' , {
+    \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ],
+    \                   'filetype': ["ruby"] },
+    \}
+
 NeoBundleLazy 'basyura/unite-rails', {
     \   'depends'   : [ 'Shougo/unite.vim' ],
     \}
@@ -147,11 +156,17 @@ NeoBundleLazy 'kchmck/vim-coffee-script', {
     \}
 " }}}
 
+" Coffee script
+NeoBundleLazy 'derekwyatt/vim-scala', {
+    \    "autoload" : { "filetypes" : ["scala"] }   
+    \}
+" }}}
+
 " Utils
-NeoBundle 'tyru/restart.vim'
+"NeoBundle 'tyru/restart.vim'
 
 " REGREL
-NeoBundle 'kanosaki/regrel.vim'
+"NeoBundle 'kanosaki/regrel.vim'
 
 syntax on
 filetype on
