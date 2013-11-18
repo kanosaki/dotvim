@@ -50,6 +50,11 @@ NeoBundle 'tpope/vim-endwise', {
       \   'insert' : 1,
       \ } }
 NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'kmnk/vim-unite-giti'
+nnoremap <silent> <Leader>\ :Unite giti<CR>
+nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
+nnoremap <silent> <Leader>gs :Unite giti/status<CR>
+
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'bling/vim-airline'
@@ -64,20 +69,47 @@ else
 endif 
 let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
-NeoBundle 'YankRing.vim'
+"NeoBundle 'YankRing.vim'
+
+" CtrlP
+NeoBundle 'kien/ctrlp.vim'
+
+NeoBundle 'LeafCage/yankround.vim'
+nmap p <Plug>(yankround-p)
+nmap P <Plug>(yankround-P)
+nmap <C-p> <Plug>(yankround-prev)
+nmap <C-n> <Plug>(yankround-next)
+nnoremap <silent> <Leader>p :CtrlPYankRound<CR>
+let g:yankring_history_dir = "~/.vim/cache/yankround"
+let g:yankround_max_history = 50
+
+
+NeoBundleLazy 'osyo-manga/vim-over', {
+            \   'autoload'  : { 'commands' : ['OverCommandLine'] }
+            \}
+
+nnoremap <silent> <Leader>o :OverCommandLine<CR>
+let g:over_command_line_prompt = 'vim-over >>> '
+
+" Unite
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tacroe/unite-mark'
 NeoBundle 'h1mesuke/vim-alignta'
+nnoremap <Leader>a :Alignta 
+
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 't9md/vim-unite-ack'
 
 NeoBundle 'scrooloose/syntastic'
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
 "NeoBundle 'closetag.vim'
 
 NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
+nnoremap <silent> <Leader>s :VimShellPop<CR>
 
 NeoBundleLazy 'Shougo/vimfiler', {
             \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ] },
@@ -85,7 +117,7 @@ NeoBundleLazy 'Shougo/vimfiler', {
             \}
 let s:bundle = neobundle#get('vimfiler')
 function! s:bundle.hooks.on_source(bundle)
-    let g:vimfiler_as_default_explorer=1
+    let g:vifiler_as_default_explorer=1
 endfunction
 nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
 nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
@@ -103,6 +135,10 @@ NeoBundleLazy 'c.vim', {
 NeoBundleLazy 'klen/python-mode', {
     \    "autoload" : { "filetypes" : ["python"] }   
     \}
+let s:bundle = neobundle#get('python-mode')
+function! s:bundle.hooks.on_source(bundle)
+
+endfunction
 
 " SGMLs
 NeoBundleLazy 'mattn/zencoding-vim', {
@@ -274,8 +310,6 @@ inoremap <C-d> <Del>
 inoremap <C-j> <C-o>o
 
 "バッファ、タブ関連
-nnoremap gp :bp<CR>
-nnoremap gn :bn<CR>
 nnoremap tp :tabprevious<CR>
 nnoremap tn :tabnext<CR>
 nnoremap tm :tabmove 
@@ -308,8 +342,6 @@ nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
 
-" Unite
-nnoremap \\ :Unite giti/
 
 
 " コマンドモード
@@ -503,10 +535,6 @@ set grepprg=internal
 "}}}
 " 日本語設定 "{{{
 " Disable IME on Normal mode
-
-"ノーマルモードでコマンドを始める
-set iminsert=0
-set imsearch=-1
 
 " 全角スペースを視覚化
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=white
