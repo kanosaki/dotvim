@@ -9,7 +9,6 @@
 
 hi clear
 
-set background=light
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
     " complaining
@@ -25,6 +24,7 @@ if exists("g:molokai_original")
 else
     let s:molokai_original = 0
 endif
+set background=dark
 
 
 hi Boolean         guifg=#AE81FF
@@ -115,7 +115,7 @@ if s:molokai_original == 1
    hi NonText         guifg=#BCBCBC guibg=#3B3A32
 else
    hi Normal          guifg=#F8F8F2 guibg=#1B1D1E
-   hi Comment         guifg=#465457
+   hi Comment         guifg=#768487
    hi CursorLine                    guibg=#293739
    hi CursorColumn                  guibg=#293739
    hi LineNr          guifg=#BCBCBC guibg=#232526
