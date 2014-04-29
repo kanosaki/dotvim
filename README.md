@@ -2,4 +2,4 @@
 My vim configurations.
 
 
-    git clone --recursive https://github.com/kanosaki/dotvim.git
+    git clone --recursive https://github.com/kanosaki/dotvim.git ~/.vim
