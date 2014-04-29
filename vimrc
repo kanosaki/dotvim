@@ -242,8 +242,14 @@ set sidescrolloff=8
 set showmatch
 set backup
 let $VIM_BACKUPDIR=VimrcRelpath('backup')
+if !isdirectory($VIM_BACKUPDIR)
+    call mkdir($VIM_BACKUPDIR)
+endif
 set backupdir=$VIM_BACKUPDIR
 let $VIM_SWAPDIR=VimrcRelpath('swap')
+if !isdirectory($VIM_SWAPDIR)
+    call mkdir($VIM_SWAPDIR)
+endif
 set swapfile
 set directory=$VIM_SWAPDIR
 set number
