@@ -44,6 +44,8 @@ function! s:bundle.hooks.on_source(bundle)
     endif
 endfunction
 
+NeoBundle 'Shougo/neosnippet-snippets'
+
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-endwise', {
       \ 'autoload' : {
@@ -58,15 +60,10 @@ nnoremap <silent> <Leader>gs :Unite giti/status<CR>
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'bling/vim-airline'
-let g:airline_branch_prefix = '⭠ '
-let g:airline_readonly_symbol = '⭤ '
-if has('gui_running')
-    let g:airline_right_sep = '⮂'
-    let g:airline_left_sep = '⮀'
-else
-    let g:airline_right_sep = ''
-    let g:airline_left_sep = ''
-endif 
+let g:airline_branch_prefix = ''
+let g:airline_readonly_symbol = 'RO'
+let g:airline_right_sep = ''
+let g:airline_left_sep = ''
 let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
 "NeoBundle 'YankRing.vim'
@@ -95,6 +92,7 @@ let g:over_command_line_prompt = 'vim-over >>> '
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tacroe/unite-mark'
 NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 'Shougo/neomru.vim'
 nnoremap <Leader>a :Alignta 
 
 NeoBundle 'Shougo/unite-outline'
@@ -110,6 +108,8 @@ NeoBundleLazy 'Shougo/vimshell', {
     \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
     \}
 nnoremap <silent> <Leader>s :VimShellPop<CR>
+nnoremap <silent> <Leader><S-S> :VimShell<CR>
+nnoremap <silent> - :VimShellPop<CR>
 
 NeoBundleLazy 'Shougo/vimfiler', {
             \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ] },
@@ -122,6 +122,7 @@ endfunction
 nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
 nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
 nnoremap <silent> + :<C-u>VimFilerBufferDir -toggle<CR>
+nnoremap <silent> <Leader>f :<C-u>VimFilerBufferDir -toggle<CR>
 "
 " Optional Bundles
 "
@@ -197,6 +198,11 @@ NeoBundleLazy 'derekwyatt/vim-scala', {
     \    "autoload" : { "filetypes" : ["scala"] }   
     \}
 " }}}
+
+" Erlang
+NeoBundleLazy 'oscarh/vimerl', {
+    \   "autoload" : { "filetypes" : ["erlang"] }   
+    \}
 
 " Utils
 "NeoBundle 'tyru/restart.vim'
@@ -355,8 +361,8 @@ nnoremap k gk
 
 "Unite
 nnoremap <silent> <C-k>f :<C-u>Unite -vertical file file_mru directory_mru<CR>
-nnoremap <silent> gt :<C-u>Unite buffer file file_mru directory_mru<CR>
 nnoremap <silent> _ :<C-u>Unite buffer file file_mru directory_mru<CR>
+nnoremap <silent> <Leader>u :<C-u>Unite buffer file file_mru directory_mru<CR>
 nnoremap <silent> go :<C-u>Unite -vertical outline<CR>
 nnoremap <silent> gb :<C-u>Unite buffer<CR>
 nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
@@ -628,8 +634,10 @@ augroup END
 
 "}}}
 " テーマ "{{{
-colorscheme molokai
-if !has('gui_running')
+if has('gui_running')
+    colorscheme wombat
+else
+    colorscheme molokai
     hi CursorLine term=none cterm=none ctermbg=233
 endif
 " }}}
