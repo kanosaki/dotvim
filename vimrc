@@ -1,11 +1,26 @@
 
 set nocompatible
+
+
+
+" Around multiclinent
+if has('win32') || has('win64')
+    let $VIMRC_ROOT = expand('$VIM')
+else
+    let $VIMRC_ROOT = expand('$HOME/.vim')
+endif
+
+function! VimrcRelpath(expr)
+    return expand("$VIMRC_ROOT/".a:expr)
+endfunction
+
 " NeoBundle {{{
 filetype off
 
 if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim
-  call neobundle#rc(expand('~/.vim/bundle/'))
+  let $NEOBUNDLE_DIR = VimrcRelpath('bundle/neobundle.vim')
+  set runtimepath+=$NEOBUNDLE_DIR
+  call neobundle#rc(VimrcRelpath('bundle'))
 endif
 
 "
@@ -77,7 +92,6 @@ nmap P <Plug>(yankround-P)
 nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
 nnoremap <silent> <Leader>p :CtrlPYankRound<CR>
-let g:yankring_history_dir = "~/.vim/cache/yankround"
 let g:yankround_max_history = 50
 
 
@@ -227,9 +241,11 @@ set scrolloff=5 " スクロール時の余白確保
 set sidescrolloff=8
 set showmatch
 set backup
-set backupdir=~/.vim/backup
+let $VIM_BACKUPDIR=VimrcRelpath('backup')
+set backupdir=$VIM_BACKUPDIR
+let $VIM_SWAPDIR=VimrcRelpath('swap')
 set swapfile
-set directory=~/.vim/swap
+set directory=$VIM_SWAPDIR
 set number
 set history=100
 set list
