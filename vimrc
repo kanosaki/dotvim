@@ -1,6 +1,8 @@
 
 set nocompatible
 
+let s:noplugin = 0
+
 " Around multiclinent
 if has('win32') || has('win64')
     let $VIMRC_ROOT = expand('$VIM')
@@ -12,127 +14,132 @@ function! VimrcRelpath(expr)
     return expand("$VIMRC_ROOT/".a:expr)
 endfunction
 
+augroup MyAutoCmd
+  autocmd!
+augroup END
+
 " NeoBundle {{{
 filetype off
 
-if has('vim_starting')
-  let $NEOBUNDLE_DIR = VimrcRelpath('bundle/neobundle.vim')
-  set runtimepath+=$NEOBUNDLE_DIR
+let $NEOBUNDLE_DIR = VimrcRelpath('bundle/neobundle.vim')
+if !isdirectory($NEOBUNDLE_DIR) || v:version < 702
+  let s:noplugin = 1
+else
+  if has('vim_starting')
+      set runtimepath+=$NEOBUNDLE_DIR
+  endif
   call neobundle#rc(VimrcRelpath('bundle'))
-endif
 
-"
-" Basic Bundles
-"
-NeoBundle 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \     'mac' : 'make -f make_mac.mak',
-      \     'unix' : 'make -f make_unix.mak',
-      \    },
-      \ }
+  NeoBundleFetch 'Shougo/neobundle.vim'
 
-NeoBundle 'Shougo/neocomplcache', {
-      \ 'autoload' : {
-      \   'insert' : 1,
-      \ }}
+  NeoBundle 'Shougo/vimproc', {
+        \ 'build' : {
+        \     'mac'     : 'make -f make_mac.mak',
+        \     'unix'    : 'make -f make_unix.mak',
+        \     'cygwin'  : 'make -f make_cygwin.mak',
+        \     'windows' : 'make -f make_mingw32.mak',
+        \    },
+        \ }
 
-" {{{ neocomplcache configurations
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplcache.
-let g:neocomplcache_enable_at_startup = 1
-" Use smartcase.
-let g:neocomplcache_enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplcache_min_syntax_length = 3
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+  NeoBundle 'Shougo/neocomplete.vim', {
+        \ 'autoload' : {
+        \   'insert' : 1,
+        \ }}
 
-" Enable heavy features.
-" Use camel case completion.
-let g:neocomplcache_enable_camel_case_completion = 1
-" Use underbar completion.
-let g:neocomplcache_enable_underbar_completion = 1
+  let s:hooks = neobundle#get_hooks("neocomplete.vim")
+  function! s:hooks.on_source(bundle)
+    " Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+    " Disable AutoComplPop.
+    let g:acp_enableAtStartup = 0
+    " Use neocomplete.
+    let g:neocomplete#enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplete#enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplete#sources#syntax#min_keyword_length = 3
+    let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
-" Define dictionary.
-"let g:neocomplcache_dictionary_filetype_lists = {
-"    \ 'default' : '',
-"    \ 'vimshell' : $HOME.'/.vimshell_hist',
-"    \ 'scheme' : $HOME.'/.gosh_completions'
-"        \ }
+    " Define dictionary.
+    let g:neocomplete#sources#dictionary#dictionaries = {
+        \ 'default' : '',
+        \ 'vimshell' : $HOME.'/.vimshell_hist',
+        \ 'scheme' : $HOME.'/.gosh_completions'
+            \ }
 
-" Define keyword.
-if !exists('g:neocomplcache_keyword_patterns')
-    let g:neocomplcache_keyword_patterns = {}
-endif
-let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+    " Define keyword.
+    if !exists('g:neocomplete#keyword_patterns')
+      let g:neocomplete#keyword_patterns = {}
+    endif
+    let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
-" Plugin key-mappings.
-"inoremap <expr><C-g>     neocomplcache#undo_completion()
-"inoremap <expr><C-l>     neocomplcache#complete_common_string()
+    " Plugin key-mappings.
+    inoremap <expr><C-g>     neocomplete#undo_completion()
+    inoremap <expr><C-l>     neocomplete#complete_common_string()
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return neocomplcache#smart_close_popup() . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup()
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
+    " Recommended key-mappings.
+    " <CR>: close popup and save indent.
+    inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+    function! s:my_cr_function()
+      return neocomplete#close_popup() . "\<CR>"
+      " For no inserting <CR> key.
+      "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+    endfunction
+    " <TAB>: completion.
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " <C-h>, <BS>: close popup and delete backword char.
+    inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><C-y>  neocomplete#close_popup()
+    inoremap <expr><C-e>  neocomplete#cancel_popup()
+    " Close popup by <Space>.
+    inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
 
-" For cursor moving in insert mode(Not recommended)
-inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-" Or set this.
-"let g:neocomplcache_enable_cursor_hold_i = 1
-" Or set this.
-"let g:neocomplcache_enable_insert_char_pre = 1
+    " For cursor moving in insert mode(Not recommended)
+    inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
+    inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
+    inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
+    inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
+    " Or set this.
+    "let g:neocomplete#enable_cursor_hold_i = 1
+    " Or set this.
+    "let g:neocomplete#enable_insert_char_pre = 1
 
-" AutoComplPop like behavior.
-"let g:neocomplcache_enable_auto_select = 1
+    " AutoComplPop like behavior.
+    "let g:neocomplete#enable_auto_select = 1
 
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplcache_enable_auto_select = 1
-"let g:neocomplcache_disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+    " Shell like behavior(not recommended).
+    "set completeopt+=longest
+    "let g:neocomplete#enable_auto_select = 1
+    "let g:neocomplete#disable_auto_complete = 1
+    "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    " Enable omni completion.
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
-" Enable heavy omni completion.
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    " Enable heavy omni completion.
+    if !exists('g:neocomplete#sources#omni#input_patterns')
+      let g:neocomplete#sources#omni#input_patterns = {}
+    endif
+    "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+    "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+    "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-" For perlomni.vim setting.
-" https://github.com/c9s/perlomni.vim
-let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-" }}} 
-NeoBundleLazy 'Shougo/neosnippet', {
-      \ 'autoload' : {
-      \   'insert' : 1,
-      \ }}
-let s:bundle = neobundle#get('neosnippet')
-function! s:bundle.hooks.on_source(bundle)
+    " For perlomni.vim setting.
+    " https://github.com/c9s/perlomni.vim
+    let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+  endfunction
+
+
+  NeoBundleLazy 'Shougo/neosnippet', {
+        \ 'autoload' : {
+        \   'insert' : 1,
+        \ }}
+  let s:bundle = neobundle#get('neosnippet')
+  function! s:bundle.hooks.on_source(bundle)
     " SuperTab like snippets behavior.
     imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
     \ "\<Plug>(neosnippet_expand_or_jump)"
@@ -145,172 +152,198 @@ function! s:bundle.hooks.on_source(bundle)
     if has('conceal')
       set conceallevel=2 concealcursor=i
     endif
-endfunction
+  endfunction
 
-NeoBundle 'Shougo/neosnippet-snippets'
+  NeoBundle 'Shougo/neosnippet-snippets'
 
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-endwise', {
-      \ 'autoload' : {
-      \   'insert' : 1,
-      \ } }
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'kmnk/vim-unite-giti'
-nnoremap <silent> <Leader>\ :Unite giti<CR>
-nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
-nnoremap <silent> <Leader>gs :Unite giti/status<CR>
+  NeoBundle 'tpope/vim-surround'
+  NeoBundle 'tpope/vim-endwise', {
+        \ 'autoload' : {
+        \   'insert' : 1,
+        \ } }
+  NeoBundle 'tpope/vim-fugitive'
+  NeoBundle 'kmnk/vim-unite-giti'
+  nnoremap <silent> <Leader>\ :Unite giti<CR>
+  nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
+  nnoremap <silent> <Leader>gs :Unite giti/status<CR>
 
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'bling/vim-airline'
-let g:airline_branch_prefix = ''
-let g:airline_readonly_symbol = 'RO'
-let g:airline_right_sep = ''
-let g:airline_left_sep = ''
-let g:airline_theme = 'luna'
-let g:airline#extensions#whitespace#enabled = 0
-"NeoBundle 'YankRing.vim'
+  NeoBundle 'thinca/vim-quickrun'
+  NeoBundle 'thinca/vim-ref'
+  NeoBundle 'bling/vim-airline'
+  let g:airline_branch_prefix = ''
+  let g:airline_readonly_symbol = 'RO'
+  let g:airline_right_sep = ''
+  let g:airline_left_sep = ''
+  let g:airline_theme = 'luna'
+  let g:airline#extensions#whitespace#enabled = 0
+  "NeoBundle 'YankRing.vim'
 
-" CtrlP
-NeoBundle 'kien/ctrlp.vim'
+  " CtrlP
+  NeoBundle 'kien/ctrlp.vim'
 
-NeoBundle 'LeafCage/yankround.vim'
-nmap p <Plug>(yankround-p)
-nmap P <Plug>(yankround-P)
-nmap <C-p> <Plug>(yankround-prev)
-nmap <C-n> <Plug>(yankround-next)
-nnoremap <silent> <Leader>p :CtrlPYankRound<CR>
-let g:yankround_max_history = 50
+  NeoBundle 'LeafCage/yankround.vim'
+  let s:hooks = neobundle#get_hooks("yankround.vim")
+  function! s:hooks.on_source(bundle)
+    nmap p <Plug>(yankround-p)
+    nmap P <Plug>(yankround-P)
+    nmap <C-p> <Plug>(yankround-prev)
+    nmap <C-n> <Plug>(yankround-next)
+    nnoremap <silent> <Leader>p :CtrlPYankRound<CR>
+    let g:yankround_max_history = 50
+  endfunction
 
+  NeoBundleLazy 'osyo-manga/vim-over', {
+              \   'autoload'  : { 'commands' : ['OverCommandLine'] }
+              \}
+  let s:hooks = neobundle#get_hooks("vim-over")
+  function! s:hooks.on_source(bundle)
+    nnoremap <silent> <Leader>o :OverCommandLine<CR>
+    let g:over_command_line_prompt = 'vim-over >>> '
+  endfunction
 
-NeoBundleLazy 'osyo-manga/vim-over', {
-            \   'autoload'  : { 'commands' : ['OverCommandLine'] }
-            \}
+  " Unite
+  NeoBundle 'Shougo/unite.vim'
+  let s:hooks = neobundle#get_hooks("unite.vim")
+  function! s:hooks.on_source(bundle)
+    " start unite in insert mode
+    let g:unite_enable_start_insert = 1
+    " use vimfiler to open directory
+    call unite#custom_default_action("source/bookmark/directory", "vimfiler")
+    call unite#custom_default_action("directory", "vimfiler")
+    call unite#custom_default_action("directory_mru", "vimfiler")
+    autocmd MyAutoCmd FileType unite call s:unite_settings()
+    function! s:unite_settings()
+      imap <buffer> <Esc><Esc> <Plug>(unite_exit)
+      nmap <buffer> <Esc> <Plug>(unite_exit)
+      nmap <buffer> <C-n> <Plug>(unite_select_next_line)
+      nmap <buffer> <C-p> <Plug>(unite_select_previous_line)
+    endfunction
+  endfunction
 
-nnoremap <silent> <Leader>o :OverCommandLine<CR>
-let g:over_command_line_prompt = 'vim-over >>> '
+  NeoBundle 'tacroe/unite-mark'
+  NeoBundle 'h1mesuke/vim-alignta'
+  NeoBundle 'Shougo/neomru.vim'
+  nnoremap <Leader>a :Alignta 
 
-" Unite
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'tacroe/unite-mark'
-NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'Shougo/neomru.vim'
-nnoremap <Leader>a :Alignta 
+  NeoBundle 'Shougo/unite-outline'
+  NeoBundle 'osyo-manga/unite-quickfix'
+  NeoBundle 't9md/vim-unite-ack'
 
-NeoBundle 'Shougo/unite-outline'
-NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 't9md/vim-unite-ack'
+  NeoBundle 'scrooloose/syntastic'
+  let g:syntastic_error_symbol='E'
+  let g:syntastic_warning_symbol='W'
+  "NeoBundle 'closetag.vim'
 
-NeoBundle 'scrooloose/syntastic'
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-"NeoBundle 'closetag.vim'
+  NeoBundleLazy 'Shougo/vimshell', {
+      \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
+      \}
+  nnoremap <silent> <Leader>s :VimShellPop<CR>
+  nnoremap <silent> <Leader><S-S> :VimShell<CR>
+  nnoremap <silent> - :VimShellPop<CR>
 
-NeoBundleLazy 'Shougo/vimshell', {
-    \   'autoload' : { 'commands' : [ 'VimShell', "VimShellPop", "VimShellInteractive" ] }
-    \}
-nnoremap <silent> <Leader>s :VimShellPop<CR>
-nnoremap <silent> <Leader><S-S> :VimShell<CR>
-nnoremap <silent> - :VimShellPop<CR>
-
-NeoBundleLazy 'Shougo/vimfiler', {
-            \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ] },
-            \   'depends'   : [ 'Shougo/unite.vim' ],
-            \}
-let s:bundle = neobundle#get('vimfiler')
-function! s:bundle.hooks.on_source(bundle)
+  NeoBundleLazy 'Shougo/vimfiler', {
+              \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ] },
+              \   'depends'   : [ 'Shougo/unite.vim' ],
+              \}
+  let s:bundle = neobundle#get('vimfiler')
+  function! s:bundle.hooks.on_source(bundle)
     let g:vifiler_as_default_explorer=1
-endfunction
-nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
-nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
-nnoremap <silent> + :<C-u>VimFilerBufferDir -toggle<CR>
-nnoremap <silent> <Leader>f :<C-u>VimFilerBufferDir -toggle<CR>
-"
-" Optional Bundles
-"
+  endfunction
+  nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
+  nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
+  nnoremap <silent> + :<C-u>VimFilerBufferDir -toggle<CR>
+  nnoremap <silent> <Leader>f :<C-u>VimFilerBufferDir -toggle<CR>
+  "
+  " Optional Bundles
+  "
 
-" C/C++
-NeoBundleLazy 'c.vim', {
-    \    "autoload" : { "filetypes" : ["c", "cpp"] }   
-    \}
+  " C/C++
+  NeoBundleLazy 'c.vim', {
+      \    "autoload" : { "filetypes" : ["c", "cpp"] }   
+      \}
 
-" Python
-NeoBundleLazy 'klen/python-mode', {
-    \    "autoload" : { "filetypes" : ["python"] }   
-    \}
-let s:bundle = neobundle#get('python-mode')
-function! s:bundle.hooks.on_source(bundle)
+  " Python
+  NeoBundleLazy 'klen/python-mode', {
+      \    "autoload" : { "filetypes" : ["python"] }   
+      \}
+  let s:bundle = neobundle#get('python-mode')
+  function! s:bundle.hooks.on_source(bundle)
 
-endfunction
+  endfunction
 
-" SGMLs
-NeoBundleLazy 'mattn/zencoding-vim', {
-    \    "autoload" : { "filetypes" : ["html", "xml", "xhtml", "eruby", "scala"] }   
-    \}
+  " SGMLs
+  NeoBundleLazy 'mattn/zencoding-vim', {
+      \    "autoload" : { "filetypes" : ["html", "xml", "xhtml", "eruby", "scala"] }   
+      \}
 
-" Haskell
-NeoBundleLazy 'dag/vim2hs', {
-    \    "autoload" : { "filetypes" : ["haskell"] }   
-    \}
-let s:bundle = neobundle#get('vim2hs')
-function! s:bundle.hooks.on_source(bundle)
-    let g:haskell_conceal = 0
-endfunction
-NeoBundleLazy 'eagletmt/ghcmod-vim', {
-    \    "autoload" : { "filetypes" : ["haskell"] }   
-    \}
-let s:bundle = neobundle#get('ghcmod-vim')
-function! s:bundle.hooks.on_source(bundle)
-    nnoremap <silent> <Leader>i :GhcModInfoPreview<CR>
-    nnoremap <silent> <Leader>t :GhcModTypeInsert<CR>
-    nnoremap <silent> <Leader>l :GhcModCheckAndLintAsync<CR>
-    augroup ghcmodcheck
-      autocmd! BufWritePost <buffer> GhcModCheckAsync
-    augroup END
-endfunction
-NeoBundleLazy 'eagletmt/unite-haddock', {
-    \   "autoload" : { "filetypes" : ["haskell"] }   
-    \}
-NeoBundleLazy 'ujihisa/neco-ghc', {
-    \   "autoload" : { "filetypes" : ["haskell"] }   
-    \}
-" Ruby and Rake
-"NeoBundle 'tpope/vim-rake'
-NeoBundleLazy 'ujihisa/unite-rake', {
-      \ 'depends' : 'Shougo/unite.vim' }
+  " Haskell
+  NeoBundleLazy 'dag/vim2hs', {
+      \    "autoload" : { "filetypes" : ["haskell"] }   
+      \}
+  let s:bundle = neobundle#get('vim2hs')
+  function! s:bundle.hooks.on_source(bundle)
+      let g:haskell_conceal = 0
+  endfunction
+  NeoBundleLazy 'eagletmt/ghcmod-vim', {
+      \    "autoload" : { "filetypes" : ["haskell"] }   
+      \}
+  let s:bundle = neobundle#get('ghcmod-vim')
+  function! s:bundle.hooks.on_source(bundle)
+      nnoremap <silent> <Leader>i :GhcModInfoPreview<CR>
+      nnoremap <silent> <Leader>t :GhcModTypeInsert<CR>
+      nnoremap <silent> <Leader>l :GhcModCheckAndLintAsync<CR>
+      augroup ghcmodcheck
+        autocmd! BufWritePost <buffer> GhcModCheckAsync
+      augroup END
+  endfunction
+  NeoBundleLazy 'eagletmt/unite-haddock', {
+      \   "autoload" : { "filetypes" : ["haskell"] }   
+      \}
+  NeoBundleLazy 'ujihisa/neco-ghc', {
+      \   "autoload" : { "filetypes" : ["haskell"] }   
+      \}
+  " Ruby and Rake
+  "NeoBundle 'tpope/vim-rake'
+  NeoBundleLazy 'ujihisa/unite-rake', {
+        \ 'depends' : 'Shougo/unite.vim' }
 
-" Rails
-NeoBundleLazy 'tpope/vim-rails' , {
-    \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ],
-    \                   'filetype': ["ruby"] },
-    \}
+  " Rails
+  NeoBundleLazy 'tpope/vim-rails' , {
+      \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ],
+      \                   'filetype': ["ruby"] },
+      \}
 
-NeoBundleLazy 'basyura/unite-rails', {
-    \   'depends'   : [ 'Shougo/unite.vim' ],
-    \}
+  NeoBundleLazy 'basyura/unite-rails', {
+      \   'depends'   : [ 'Shougo/unite.vim' ],
+      \}
 
-" Coffee script
-NeoBundleLazy 'kchmck/vim-coffee-script', {
-    \    "autoload" : { "filetypes" : ["coffee"] }   
-    \}
-" }}}
+  " Coffee script
+  NeoBundleLazy 'kchmck/vim-coffee-script', {
+      \    "autoload" : { "filetypes" : ["coffee"] }   
+      \}
+  " }}}
 
-" Coffee script
-NeoBundleLazy 'derekwyatt/vim-scala', {
-    \    "autoload" : { "filetypes" : ["scala"] }   
-    \}
-" }}}
+  " Coffee script
+  NeoBundleLazy 'derekwyatt/vim-scala', {
+      \    "autoload" : { "filetypes" : ["scala"] }   
+      \}
+  " }}}
 
-" Erlang
-NeoBundleLazy 'oscarh/vimerl', {
-    \   "autoload" : { "filetypes" : ["erlang"] }   
-    \}
+  " Erlang
+  NeoBundleLazy 'oscarh/vimerl', {
+      \   "autoload" : { "filetypes" : ["erlang"] }   
+      \}
 
-" Utils
-"NeoBundle 'tyru/restart.vim'
+  " Rust
+  NeoBundleLazy 'wting/rust.vim', {
+      \   "autoload" : { "filetype" : ["rust"] }
+      \}
+  " Utils
+  "NeoBundle 'tyru/restart.vim'
 
-" REGREL
-"NeoBundle 'kanosaki/regrel.vim'
+  " REGREL
+  "NeoBundle 'kanosaki/regrel.vim'
+endif
 
 syntax on
 filetype on
@@ -383,9 +416,6 @@ set softtabstop=4
 set expandtab
 set statusline=[%{winnr('$')>1?':'.winnr().'/'.winnr('$'):''}]\ %t\ %y%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%r%m%=%c:%l/%L
 "}}}
-
-" ディレクトリの自動移動
-"au   BufEnter *   execute ":lcd " . escape(expand("%:p:h"), " #\\")
 
 "}}}
 " バッファ関連 "{{{
@@ -515,7 +545,7 @@ let g:rsenseUseOmniFunc=1
 au BufRead,BufNewFile,BufReadPre *.coffee set filetype=coffee
 autocmd FileType coffee setlocal sw=2 sts=2 ts=2
 
-
+au BufRead,BufNewFile,BufReadPre *.rs set filetype=rust
 
 "}}}
 " Omni completion{{{
