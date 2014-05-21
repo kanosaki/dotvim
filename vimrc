@@ -166,6 +166,7 @@ else
   nnoremap <silent> <Leader>\ :Unite giti<CR>
   nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
   nnoremap <silent> <Leader>gs :Unite giti/status<CR>
+  NeoBundle 'airblade/vim-gitgutter'
 
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'thinca/vim-ref'
@@ -321,13 +322,11 @@ else
   NeoBundleLazy 'kchmck/vim-coffee-script', {
       \    "autoload" : { "filetypes" : ["coffee"] }   
       \}
-  " }}}
 
   " Coffee script
   NeoBundleLazy 'derekwyatt/vim-scala', {
       \    "autoload" : { "filetypes" : ["scala"] }   
       \}
-  " }}}
 
   " Erlang
   NeoBundleLazy 'oscarh/vimerl', {
@@ -344,6 +343,8 @@ else
   " REGREL
   "NeoBundle 'kanosaki/regrel.vim'
 endif
+
+" }}}
 
 syntax on
 filetype on
