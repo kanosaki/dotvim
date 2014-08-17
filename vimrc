@@ -162,10 +162,11 @@ else
         \   'insert' : 1,
         \ } }
   NeoBundle 'tpope/vim-fugitive'
-  NeoBundle 'kmnk/vim-unite-giti'
-  nnoremap <silent> <Leader>\ :Unite giti<CR>
-  nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
-  nnoremap <silent> <Leader>gs :Unite giti/status<CR>
+  "NeoBundle 'kmnk/vim-unite-giti'
+  "nnoremap <silent> <Leader>\ :Unite giti<CR>
+  "nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
+  "nnoremap <silent> <Leader>gs :Unite giti/status<CR>
+  NeoBundle 'cohama/agit.vim'
   NeoBundle 'airblade/vim-gitgutter'
 
   NeoBundle 'thinca/vim-quickrun'
@@ -189,7 +190,7 @@ else
     nmap P <Plug>(yankround-P)
     nmap <C-p> <Plug>(yankround-prev)
     nmap <C-n> <Plug>(yankround-next)
-    nnoremap <silent> <Leader>p :CtrlPYankRound<CR>
+    nnoremap <silent> <Leader>p :Unite yankround<CR>
     let g:yankround_max_history = 50
   endfunction
 
@@ -207,7 +208,7 @@ else
   let s:hooks = neobundle#get_hooks("unite.vim")
   function! s:hooks.on_source(bundle)
     " start unite in insert mode
-    let g:unite_enable_start_insert = 1
+    " let g:unite_enable_start_insert = 1
     " use vimfiler to open directory
     call unite#custom_default_action("source/bookmark/directory", "vimfiler")
     call unite#custom_default_action("directory", "vimfiler")
@@ -273,7 +274,7 @@ else
   endfunction
 
   " SGMLs
-  NeoBundleLazy 'mattn/zencoding-vim', {
+  NeoBundleLazy 'mattn/emmet-vim', {
       \    "autoload" : { "filetypes" : ["html", "xml", "xhtml", "eruby", "scala"] }   
       \}
 
@@ -300,9 +301,15 @@ else
   NeoBundleLazy 'eagletmt/unite-haddock', {
       \   "autoload" : { "filetypes" : ["haskell"] }   
       \}
+
   NeoBundleLazy 'ujihisa/neco-ghc', {
       \   "autoload" : { "filetypes" : ["haskell"] }   
       \}
+  let s:bundle = neobundle#get('neco-ghc')
+  function! s:bundle.hooks.on_source(bundle)
+      setlocal omnifunc=necoghc#omnifunc
+  endfunction
+
   " Ruby and Rake
   "NeoBundle 'tpope/vim-rake'
   NeoBundleLazy 'ujihisa/unite-rake', {
@@ -337,11 +344,27 @@ else
   NeoBundleLazy 'wting/rust.vim', {
       \   "autoload" : { "filetype" : ["rust"] }
       \}
+
+  " Rust
+  NeoBundleLazy 'fatih/vim-go', {
+      \   "autoload" : { "filetype" : ["go"] }
+      \}
+
+
   " Utils
   "NeoBundle 'tyru/restart.vim'
 
   " REGREL
   "NeoBundle 'kanosaki/regrel.vim'
+
+  " Docker
+  NeoBundleLazy 'ekalinin/Dockerfile.vim', {
+      \   "autoload" : { "filetype" : ["Dockerfile"] }
+      \}
+
+  NeoBundleLazy 'vim-scripts/slimv.vim', {
+      \   "autoload" : { "filetype" : ["lisp", "scheme", "clojure"] }
+      \}
 endif
 
 " }}}
@@ -444,6 +467,7 @@ nnoremap <F5> !./%<CR>
 inoremap <C-b> <C-o>b
 inoremap <C-f> <ESC>ea
 inoremap <C-q> <ESC>
+noremap <C-q> <ESC>
 silent !stty -ixon > /dev/null 2>/dev/null
 inoremap <C-a> <C-o>:call WSBack()<CR>
 
@@ -548,6 +572,9 @@ autocmd FileType coffee setlocal sw=2 sts=2 ts=2
 
 au BufRead,BufNewFile,BufReadPre *.rs set filetype=rust
 
+" Dockerfile
+au BufRead,BufNewFile Dockerfile* setf Dockerfile
+au BufRead,BufNewFile *.dock setf Dockerfile
 "}}}
 " Omni completion{{{
 
