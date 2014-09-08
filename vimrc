@@ -224,12 +224,13 @@ else
 
   NeoBundle 'tacroe/unite-mark'
   NeoBundle 'h1mesuke/vim-alignta'
+  NeoBundle 'terryma/vim-multiple-cursors'
   NeoBundle 'Shougo/neomru.vim'
   nnoremap <Leader>a :Alignta 
 
   NeoBundle 'Shougo/unite-outline'
   NeoBundle 'osyo-manga/unite-quickfix'
-  NeoBundle 't9md/vim-unite-ack'
+  "NeoBundle 't9md/vim-unite-ack'
 
   NeoBundle 'scrooloose/syntastic'
   let g:syntastic_error_symbol='E'
@@ -342,12 +343,12 @@ else
 
   " Rust
   NeoBundleLazy 'wting/rust.vim', {
-      \   "autoload" : { "filetype" : ["rust"] }
+      \   "autoload" : { "filetypes" : ["rust"] }
       \}
 
-  " Rust
+  " Go
   NeoBundleLazy 'fatih/vim-go', {
-      \   "autoload" : { "filetype" : ["go"] }
+      \   "autoload" : { "filetypes" : ["go"] }
       \}
 
 
@@ -550,14 +551,10 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 let g:untie_split_rule='botright'
 let g:unite_winwidth=70
-if executable('ack')
-    let g:unite_source_ack_command="ack"
-    com! -nargs=* Ack Unite ack:<args>
-elseif executable('ack-grep')
-    let g:unite_source_ack_command="ack-grep"
-    com! -nargs=* Ack Unite ack:<args>
-else
-    echo 'ack command not found'
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_recursive_opt = ''
 endif
 
 " RSense
