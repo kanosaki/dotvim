@@ -3,3 +3,4 @@ swap/
 history/
 bundle/*
 !bundle/neobundle.vim/
+.netrwhist

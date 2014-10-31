@@ -273,7 +273,7 @@ else
       \}
   let s:bundle = neobundle#get('python-mode')
   function! s:bundle.hooks.on_source(bundle)
-
+      set completeopt=menu
   endfunction
 
   " SGMLs
@@ -376,6 +376,9 @@ syntax on
 filetype on
 filetype indent on
 filetype plugin on
+
+set t_Co=256
+
 " 表示 "{{{
 
 "タイトルを表示
