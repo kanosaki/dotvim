@@ -577,6 +577,12 @@ au BufRead,BufNewFile,BufReadPre *.rs set filetype=rust
 " Dockerfile
 au BufRead,BufNewFile Dockerfile* setf Dockerfile
 au BufRead,BufNewFile *.dock setf Dockerfile
+
+" Markdown
+au BufRead,BufNewFile,BufReadPre *.md set filetype=markdown
+
+" kl1
+au BufRead,BufNewFile,BufReadPre *.kl1 set filetype=prolog
 "}}}
 " Omni completion{{{
 
