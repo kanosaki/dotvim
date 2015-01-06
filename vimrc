@@ -252,7 +252,7 @@ else
               \}
   let s:bundle = neobundle#get('vimfiler')
   function! s:bundle.hooks.on_source(bundle)
-    let g:vifiler_as_default_explorer=1
+    let g:vimfiler_as_default_explorer=1
   endfunction
   nnoremap <silent> ge :<C-u>VimFilerBufferDir -toggle -explorer -split -simple -winwidth=35<CR>
   nnoremap <silent> gr :<C-u>VimFilerBufferDir -toggle<CR>
