@@ -28,7 +28,7 @@ else
   if has('vim_starting')
       set runtimepath+=$NEOBUNDLE_DIR
   endif
-  call neobundle#rc(VimrcRelpath('bundle'))
+  call neobundle#begin(VimrcRelpath('bundle'))
 
   NeoBundleFetch 'Shougo/neobundle.vim'
 
@@ -368,6 +368,9 @@ else
   NeoBundleLazy 'vim-scripts/slimv.vim', {
       \   "autoload" : { "filetype" : ["lisp", "scheme", "clojure"] }
       \}
+
+  NeoBundle 'jceb/vim-orgmode'
+  call neobundle#end()
 endif
 
 " }}}
@@ -583,6 +586,9 @@ au BufRead,BufNewFile,BufReadPre *.md set filetype=markdown
 
 " kl1
 au BufRead,BufNewFile,BufReadPre *.kl1 set filetype=prolog
+
+" org-mode
+au BufRead,BufNewFile,BufReadPre *.org set filetype=org
 "}}}
 " Omni completion{{{
 
