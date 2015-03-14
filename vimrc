@@ -93,7 +93,7 @@ else
         inoremap <expr><C-y>  neocomplete#close_popup()
         inoremap <expr><C-e>  neocomplete#cancel_popup()
         " Close popup by <Space>.
-        inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
+        "inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
 
         " For cursor moving in insert mode(Not recommended)
         inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
@@ -174,12 +174,15 @@ else
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'thinca/vim-ref'
   NeoBundle 'bling/vim-airline'
-  let g:airline_branch_prefix = ''
-  let g:airline_readonly_symbol = 'RO'
+  let g:airline_symbols = {
+    \ 'branch' : '',
+    \ 'readonly' : 'R'
+    \ }  
   let g:airline_right_sep = ''
   let g:airline_left_sep = ''
   let g:airline_theme = 'luna'
   let g:airline#extensions#whitespace#enabled = 0
+  let g:airline#extensions#tabline#enabled = 1
   "NeoBundle 'YankRing.vim'
 
   " CtrlP
@@ -490,11 +493,14 @@ inoremap <C-d> <Del>
 inoremap <C-j> <C-o>o
 
 "バッファ、タブ関連
-nnoremap tp :tabprevious<CR>
-nnoremap tn :tabnext<CR>
-nnoremap tm :tabmove 
-nnoremap te :tabe 
-nnoremap tc :tabclose<CR>
+nnoremap <silent> tp :tabprevious<CR>
+nnoremap <silent> tn :tabnext<CR>
+nnoremap <silent> tm :tabmove 
+nnoremap <silent> te :tabe 
+nnoremap <silent> tc :tabclose<CR>
+nnoremap <silent> } :bn<CR>
+nnoremap <silent> { :bp<CR>
+nnoremap <silent> ` <C-w><C-w><CR>
 nnoremap <M-h> <C-W>h
 nnoremap <M-j> <C-W>j
 nnoremap <M-k> <C-W>k
