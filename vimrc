@@ -3,12 +3,7 @@ set nocompatible
 
 let s:noplugin = 0
 
-" Around multiclinent
-if has('win32') || has('win64')
-    let $VIMRC_ROOT = expand('$VIM')
-else
-    let $VIMRC_ROOT = expand('$HOME/.vim')
-endif
+let $VIMRC_ROOT = expand('$HOME/.vim')
 
 function! VimrcRelpath(expr)
     return expand("$VIMRC_ROOT/".a:expr)
@@ -33,13 +28,14 @@ else
   NeoBundleFetch 'Shougo/neobundle.vim'
 
   NeoBundle 'Shougo/vimproc', {
-        \ 'build' : {
-        \     'mac'     : 'make -f make_mac.mak',
-        \     'unix'    : 'make -f make_unix.mak',
-        \     'cygwin'  : 'make -f make_cygwin.mak',
-        \     'windows' : 'make -f make_mingw32.mak',
-        \    },
-        \ }
+            \ 'build' : {
+            \     'windows' : 'tools\\update-dll-mingw',
+            \     'cygwin' : 'make -f make_cygwin.mak',
+            \     'mac' : 'make -f make_mac.mak',
+            \     'linux' : 'make',
+            \     'unix' : 'gmake',
+            \    },
+            \ }
 
   if has("lua")
       NeoBundle 'Shougo/neocomplete.vim', {
@@ -169,7 +165,9 @@ else
   "nnoremap <silent> <Leader>gb :Unite giti/branch<CR>
   "nnoremap <silent> <Leader>gs :Unite giti/status<CR>
   NeoBundle 'cohama/agit.vim'
-  NeoBundle 'airblade/vim-gitgutter'
+  if !has('win32') || has('win64')
+      NeoBundle 'airblade/vim-gitgutter'
+  endif
 
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'thinca/vim-ref'
@@ -307,6 +305,10 @@ else
   NeoBundleLazy 'eagletmt/unite-haddock', {
       \   "autoload" : { "filetypes" : ["haskell"] }   
       \}
+  let s:bundle = neobundle#get('unite-haddock')
+  function! s:bundle.hooks.on_source(bundle)
+      nnoremap <silent> <Leader>d :Unite haddock<CR>
+  endfunction
 
   NeoBundleLazy 'ujihisa/neco-ghc', {
       \   "autoload" : { "filetypes" : ["haskell"] }   
@@ -595,6 +597,9 @@ au BufRead,BufNewFile,BufReadPre *.kl1 set filetype=prolog
 
 " org-mode
 au BufRead,BufNewFile,BufReadPre *.org set filetype=org
+
+" Go
+au BufRead,BufNewFile,BufReadPre *.go set filetype=go
 "}}}
 " Omni completion{{{
 
