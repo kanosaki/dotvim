@@ -247,7 +247,11 @@ else
   NeoBundle 'osyo-manga/unite-quickfix'
   "NeoBundle 't9md/vim-unite-ack'
 
-  NeoBundle 'scrooloose/syntastic'
+  NeoBundle 'scrooloose/syntastic', {
+        \ 'autoload' : {
+        \   'insert' : 1,
+        \ } }
+
   let s:bundle = neobundle#get('syntastic')
   function! s:bundle.hooks.on_source(bundle)
     set statusline+=%#warningmsg#
@@ -405,7 +409,7 @@ else
   NeoBundle 'jceb/vim-orgmode'
 
   NeoBundleLazy 'gillian/vim-lldb', {
-      \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ]}
+      \   'autoload'  : { 'commands' : ['Lattach', 'Ltarget', 'Lstart', 'Lrun']}
       \}
 
   " javascript
