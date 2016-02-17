@@ -31,7 +31,7 @@ else
             \ 'build' : {
             \     'windows' : 'tools\\update-dll-mingw',
             \     'cygwin' : 'make -f make_cygwin.mak',
-            \     'mac' : 'make -f make_mac.mak',
+            \     'mac' : 'make',
             \     'linux' : 'make',
             \     'unix' : 'gmake',
             \    },
@@ -152,7 +152,10 @@ else
     endif
   endfunction
 
-  NeoBundle 'Shougo/neosnippet-snippets'
+  NeoBundleLazy 'Shougo/neosnippet-snippets',{
+        \ 'autoload' : {
+        \   'insert' : 1,
+        \ }}
 
   NeoBundle 'tpope/vim-surround'
   NeoBundle 'tpope/vim-endwise', {
@@ -171,16 +174,20 @@ else
 
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'thinca/vim-ref'
-  NeoBundle 'bling/vim-airline'
-  let g:airline_symbols = {
-    \ 'branch' : '',
-    \ 'readonly' : 'R'
-    \ }  
-  let g:airline_right_sep = ''
-  let g:airline_left_sep = ''
-  let g:airline_theme = 'luna'
-  let g:airline#extensions#whitespace#enabled = 0
-  let g:airline#extensions#tabline#enabled = 1
+  NeoBundle 'vim-airline/vim-airline'
+  NeoBundle 'vim-airline/vim-airline-themes'
+  let s:hooks = neobundle#get_hooks("vim-airline")
+  function! s:hooks.on_source(bundle)
+    let g:airline_symbols = {
+      \ 'branch' : '',
+      \ 'readonly' : 'R'
+      \ }  
+    let g:airline_right_sep = ''
+    let g:airline_left_sep = ''
+    let g:airline_theme = 'base16_default'
+    let g:airline#extensions#whitespace#enabled = 0
+    let g:airline#extensions#tabline#enabled = 1
+  endfunction
   "NeoBundle 'YankRing.vim'
 
   " CtrlP
@@ -189,10 +196,14 @@ else
   NeoBundle 'LeafCage/yankround.vim'
   let s:hooks = neobundle#get_hooks("yankround.vim")
   function! s:hooks.on_source(bundle)
-    nmap p <Plug>(yankround-p)
-    nmap P <Plug>(yankround-P)
-    nmap <C-p> <Plug>(yankround-prev)
-    nmap <C-n> <Plug>(yankround-next)
+		nmap p <Plug>(yankround-p)
+		xmap p <Plug>(yankround-p)
+		nmap P <Plug>(yankround-P)
+		nmap gp <Plug>(yankround-gp)
+		xmap gp <Plug>(yankround-gp)
+		nmap gP <Plug>(yankround-gP)
+		nmap <C-p> <Plug>(yankround-prev)
+		nmap <C-n> <Plug>(yankround-next)
     nnoremap <silent> <Leader>p :Unite yankround<CR>
     let g:yankround_max_history = 50
   endfunction
@@ -231,13 +242,25 @@ else
   NeoBundle 'Shougo/neomru.vim'
   nnoremap <Leader>a :Alignta 
 
-  NeoBundle 'Shougo/unite-outline'
+  "NeoBundle 'Shougo/unite-outline'
+  NeoBundle 'majutsushi/tagbar'
   NeoBundle 'osyo-manga/unite-quickfix'
   "NeoBundle 't9md/vim-unite-ack'
 
   NeoBundle 'scrooloose/syntastic'
-  let g:syntastic_error_symbol='E'
-  let g:syntastic_warning_symbol='W'
+  let s:bundle = neobundle#get('syntastic')
+  function! s:bundle.hooks.on_source(bundle)
+    set statusline+=%#warningmsg#
+    set statusline+=%{SyntasticStatuslineFlag()}
+    set statusline+=%*
+
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 1
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+    let g:syntastic_error_symbol='E'
+    let g:syntastic_warning_symbol='W'
+  endfunction
   "NeoBundle 'closetag.vim'
 
   NeoBundleLazy 'Shougo/vimshell', {
@@ -302,6 +325,7 @@ else
         autocmd! BufWritePost <buffer> GhcModCheckAsync
       augroup END
   endfunction
+  NeoBundleLazy'itchyny/vim-haskell-indent'
   NeoBundleLazy 'eagletmt/unite-haddock', {
       \   "autoload" : { "filetypes" : ["haskell"] }   
       \}
@@ -326,7 +350,7 @@ else
   " Rails
   NeoBundleLazy 'tpope/vim-rails' , {
       \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ],
-      \                   'filetype': ["ruby"] },
+      \                   'filetypes': ["ruby"] },
       \}
 
   NeoBundleLazy 'basyura/unite-rails', {
@@ -349,9 +373,13 @@ else
       \}
 
   " Rust
-  NeoBundleLazy 'wting/rust.vim', {
+  NeoBundleLazy 'rust-lang/rust.vim', {
       \   "autoload" : { "filetypes" : ["rust"] }
       \}
+  NeoBundleLazy 'racer-rust/vim-racer', {
+      \   "autoload" : { "filetypes" : ["rust"] }
+      \}
+
 
   " Go
   NeoBundleLazy 'fatih/vim-go', {
@@ -367,14 +395,44 @@ else
 
   " Docker
   NeoBundleLazy 'ekalinin/Dockerfile.vim', {
-      \   "autoload" : { "filetype" : ["Dockerfile"] }
+      \   "autoload" : { "filetypes" : ["Dockerfile"] }
       \}
 
   NeoBundleLazy 'vim-scripts/slimv.vim', {
-      \   "autoload" : { "filetype" : ["lisp", "scheme", "clojure"] }
+      \   "autoload" : { "filetypes" : ["lisp", "scheme", "clojure"] }
       \}
 
   NeoBundle 'jceb/vim-orgmode'
+
+  NeoBundleLazy 'gillian/vim-lldb', {
+      \   'autoload'  : { 'commands' : [ 'VimFilerBufferDir', 'VimFiler', 'VimFilerExplorer' ]}
+      \}
+
+  " javascript
+  "
+  NeoBundleLazy 'pangloss/vim-javascript', {
+      \   "autoload" : { "filetypes" : ["javascript"] }
+      \}
+  NeoBundleLazy 'mxw/vim-jsx', {
+      \   "autoload" : { "filetypes" : ["javascript"] }
+      \}
+
+  NeoBundleLazy 'leafgarland/typescript-vim', {
+        \ 'autoload' : {
+        \   'filetypes' : ['typescript'] }
+        \}
+
+  NeoBundleLazy 'jason0x43/vim-js-indent', {
+        \ 'autoload' : {
+        \   'filetypes' : ['javascript', 'typescript', 'html'],
+        \}}
+  let g:js_indent_typescript = 1
+
+  NeoBundleLazy 'clausreinke/typescript-tools.vim', {
+        \ 'build' : 'npm install -g',
+        \ 'autoload' : {
+        \   'filetypes' : ['typescript'] }
+        \}
   call neobundle#end()
 endif
 
@@ -432,7 +490,9 @@ set more
 set autoread
 set cmdheight=2
 set ttyfast
-set ttymouse=xterm2
+if !has('nvim')
+  set ttymouse=xterm2
+endif
 set lazyredraw
 set ruler
 
@@ -446,11 +506,26 @@ set matchpairs+=<:>
 "if has('gui_running')
 "    let g:Powerline_symbols = 'fancy'
 "endif
+if has('gui_running')
+  "ツールバーなし
+  set guioptions-=T
+  ""メニューバーなし
+  set guioptions-=m
+  "右スクロールバーなし
+  set guioptions-=r
+  set guioptions-=R
+  ""左スクロールバーなし
+  set guioptions-=l
+  set guioptions-=L
+  "下スクロールバーなし
+  set guioptions-=b
+  "
+endif
 
 "タブ関連{{{
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 set statusline=[%{winnr('$')>1?':'.winnr().'/'.winnr('$'):''}]\ %t\ %y%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%r%m%=%c:%l/%L
 "}}}
@@ -545,7 +620,8 @@ nnoremap k gk
 nnoremap <silent> <C-k>f :<C-u>Unite -vertical file file_mru directory_mru<CR>
 nnoremap <silent> _ :<C-u>Unite buffer file file_mru directory_mru<CR>
 nnoremap <silent> <Leader>u :<C-u>Unite buffer file file_mru directory_mru<CR>
-nnoremap <silent> go :<C-u>Unite -vertical outline<CR>
+"nnoremap <silent> go :<C-u>Unite -vertical outline<CR>
+nnoremap <silent> go :TagbarToggle<CR>
 nnoremap <silent> gb :<C-u>Unite buffer<CR>
 nnoremap <silent> <C-k>b :<C-u>Unite buffer<CR>
 nnoremap <silent> <C-k>o :<C-u>Unite outline<CR>
@@ -600,26 +676,9 @@ au BufRead,BufNewFile,BufReadPre *.org set filetype=org
 
 " Go
 au BufRead,BufNewFile,BufReadPre *.go set filetype=go
-"}}}
-" Omni completion{{{
 
-"Omnicomplete with TAB
-function InsertTabWrapper()
-    if pumvisible()
-        return "\<c-n>"
-    endif
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
-        return "\<tab>"
-    elseif exists('&omnifunc') && &omnifunc == ''
-        return "\<c-n>"
-    else
-        return "\<c-x>\<c-o>"
-    endif
-endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-
+" JavaScript
+au BufRead,BufNewFile,BufReadPre *.js set syntax=javascript
 "}}}
 " Folding "{{{
 set foldenable

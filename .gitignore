@@ -4,3 +4,4 @@ history/
 bundle/*
 !bundle/neobundle.vim/
 .netrwhist
+vim-plugins-profile-master/
